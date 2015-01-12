@@ -88,4 +88,16 @@ class ServiceConfigurationResolver {
         return parsedConfiguration[dependencyName]
     }
 
-} 
+    String getLoadBalancerTypeOf(String dependencyPath) {
+        def dependency = getDependencyConfigByPath(dependencyPath)
+        if (dependency) {
+            return dependency['load-balancer']
+        } else {
+            throw new DependencyNotDefinedInConfigException("Unable to find dependency with path '$dependencyPath' in microservice configuration.")
+        }
+    }
+
+    private Map getDependencyConfigByPath(String dependencyPath) {
+        parsedConfiguration.dependencies.findResult { if (it.value['path'] == dependencyPath) return it.value }
+    }
+}

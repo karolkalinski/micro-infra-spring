@@ -53,4 +53,22 @@ class ServiceConfigurationResolverSpec extends Specification {
         then:
             resolver.dependencies == [:]
     }
+
+    def 'should provide load balancer type for given dependency name'() {
+        given:
+            def resolver = new ServiceConfigurationResolver(LOAD_BALANCING_DEPENDENCIES)
+        expect:
+            resolver.getLoadBalancerTypeOf('com/ofg/ping') == 'sticky'
+            resolver.getLoadBalancerTypeOf('com/ofg/pong') == null
+    }
+
+    def 'should throw exception when looking for load balancer type of a dependency with unknown name'() {
+        given:
+            def resolver = new ServiceConfigurationResolver(LOAD_BALANCING_DEPENDENCIES)
+        when:
+            resolver.getLoadBalancerTypeOf('com/ofg/unknown')
+        then:
+            def ex = thrown(DependencyNotDefinedInConfigException)
+            ex.message == 'Unable to find dependency with path \'com/ofg/unknown\' in microservice configuration.'
+    }
 }
