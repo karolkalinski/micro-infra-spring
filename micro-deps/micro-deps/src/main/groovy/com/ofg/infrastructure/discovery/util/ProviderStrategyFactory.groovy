@@ -13,17 +13,19 @@ class ProviderStrategyFactory {
     static final String RANDOM = 'random'
     static final String ROUND_ROBIN = 'roundrobin'
 
+    private static final Closure ROUND_ROBIN_CREATOR = { return new RoundRobinStrategy<>() }
     private static final Map<String, Closure> STRATEGY_CREATORS = [(STICKY)         :   { return new StickyStrategy<>(new RoundRobinStrategy()) },
                                                                    (RANDOM)         :   { return new RandomStrategy<>()},
-                                                                   (ROUND_ROBIN)    :   { return new RoundRobinStrategy<>() }]
+                                                                   (ROUND_ROBIN)    :   ROUND_ROBIN_CREATOR,
+                                                                   ''               :   ROUND_ROBIN_CREATOR].withDefault { ROUND_ROBIN_CREATOR }
 
     ProviderStrategy createProviderStartegy(String originalStrategyName) {
-        String strategyName = removeRoundRobinDelimiter(originalStrategyName)
-        if (STRATEGY_CREATORS.containsKey(strategyName)) {
-            return STRATEGY_CREATORS[strategyName]() as ProviderStrategy
-        } else {
-            throw new UnknownLoadBalancerStrategyName("Unknown load balancer strategy name: '$originalStrategyName'. Supported names are sticky, random, roundrobin, round_robin and round-robin.")
-        }
+        String strategyName = toAcceptableName(originalStrategyName)
+        return STRATEGY_CREATORS[strategyName]() as ProviderStrategy
+    }
+
+    private String toAcceptableName(String originalStrategyName) {
+        return removeRoundRobinDelimiter(originalStrategyName ?: '')
     }
 
     private String removeRoundRobinDelimiter(String originalStrategyName) {

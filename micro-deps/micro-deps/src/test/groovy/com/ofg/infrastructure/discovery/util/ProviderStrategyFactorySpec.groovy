@@ -20,14 +20,8 @@ class ProviderStrategyFactorySpec extends Specification {
             'roundrobin'  | 'RoundRobinStrategy'
             'round_robin' | 'RoundRobinStrategy'
             'round-robin' | 'RoundRobinStrategy'
+            null          | 'RoundRobinStrategy'
+            ''            | 'RoundRobinStrategy'
+            'unknown'     | 'RoundRobinStrategy'
     }
-
-    def 'should throw exception for unknown strategy name'() {
-        when:
-            new ProviderStrategyFactory().createProviderStartegy('unknown')
-        then:
-            def ex = thrown(UnknownLoadBalancerStrategyName)
-            ex.message == 'Unknown load balancer strategy name: \'unknown\'. Supported names are sticky, random, roundrobin, round_robin and round-robin.'
-    }
-
 }

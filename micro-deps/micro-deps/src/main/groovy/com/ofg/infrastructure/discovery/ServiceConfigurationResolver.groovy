@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery
 
+import com.ofg.infrastructure.discovery.util.ProviderStrategyFactory
 import groovy.json.JsonSlurper
 
 import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
@@ -8,6 +9,7 @@ class ServiceConfigurationResolver {
 
     final String basePath
     private final Object parsedConfiguration
+    private static final Map EMPTY_MAP = [:]
 
     ServiceConfigurationResolver(String configuration) throws InvalidMicroserviceConfigurationException {
         (basePath, parsedConfiguration) = parseConfig(configuration)
@@ -89,15 +91,11 @@ class ServiceConfigurationResolver {
     }
 
     String getLoadBalancerTypeOf(String dependencyPath) {
-        def dependency = getDependencyConfigByPath(dependencyPath)
-        if (dependency) {
-            return dependency['load-balancer']
-        } else {
-            throw new DependencyNotDefinedInConfigException("Unable to find dependency with path '$dependencyPath' in microservice configuration.")
-        }
+        def dependencyConfig = getDependencyConfigByPath(dependencyPath)
+        return dependencyConfig['load-balancer'] ?: ProviderStrategyFactory.ROUND_ROBIN
     }
 
     private Map getDependencyConfigByPath(String dependencyPath) {
-        parsedConfiguration.dependencies.findResult { if (it.value['path'] == dependencyPath) return it.value }
+        parsedConfiguration.dependencies.findResult(EMPTY_MAP) { if (it.value['path'] == dependencyPath) return it.value }
     }
 }

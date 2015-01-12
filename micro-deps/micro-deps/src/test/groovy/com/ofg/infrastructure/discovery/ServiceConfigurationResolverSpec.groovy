@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery
 
+import com.ofg.infrastructure.discovery.util.ProviderStrategyFactory
 import spock.lang.Specification
 
 import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.*
@@ -54,21 +55,18 @@ class ServiceConfigurationResolverSpec extends Specification {
             resolver.dependencies == [:]
     }
 
-    def 'should provide load balancer type for given dependency name'() {
+    def 'should provide load balancer type for given service path'() {
         given:
             def resolver = new ServiceConfigurationResolver(LOAD_BALANCING_DEPENDENCIES)
         expect:
-            resolver.getLoadBalancerTypeOf('com/ofg/ping') == 'sticky'
-            resolver.getLoadBalancerTypeOf('com/ofg/pong') == null
+            resolver.getLoadBalancerTypeOf('com/ofg/ping') == ProviderStrategyFactory.STICKY
+            resolver.getLoadBalancerTypeOf('com/ofg/pong') == ProviderStrategyFactory.ROUND_ROBIN
     }
 
-    def 'should throw exception when looking for load balancer type of a dependency with unknown name'() {
+    def 'should provide default round robin load balancer type for unknown service path'() {
         given:
             def resolver = new ServiceConfigurationResolver(LOAD_BALANCING_DEPENDENCIES)
-        when:
-            resolver.getLoadBalancerTypeOf('com/ofg/unknown')
-        then:
-            def ex = thrown(DependencyNotDefinedInConfigException)
-            ex.message == 'Unable to find dependency with path \'com/ofg/unknown\' in microservice configuration.'
+        expect:
+            resolver.getLoadBalancerTypeOf('com/ofg/other') == ProviderStrategyFactory.ROUND_ROBIN
     }
 }
