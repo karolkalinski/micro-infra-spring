@@ -20,7 +20,7 @@ class HystrixServletConfiguration {
 
     @Bean
     public ServletRegistrationBean servletRegistrationBean(
-            @Value('${hystrix.stream-servlet.path:/hystrix.stream}') String hystrixMetricsStreamPath) {
+            @Value('${hystrix.stream-servlet.path:/health/hystrix.stream}') String hystrixMetricsStreamPath) {
         return new ServletRegistrationBean(new HystrixMetricsStreamServlet(), hystrixMetricsStreamPath)
     }
 
