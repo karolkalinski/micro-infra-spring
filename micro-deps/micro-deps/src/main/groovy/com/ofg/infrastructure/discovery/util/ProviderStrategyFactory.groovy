@@ -38,11 +38,3 @@ class ProviderStrategyFactory {
     }
 
 }
-
-class UnknownLoadBalancerStrategyName extends Exception {
-
-    UnknownLoadBalancerStrategyName(String message) {
-        super(message)
-    }
-
-}
