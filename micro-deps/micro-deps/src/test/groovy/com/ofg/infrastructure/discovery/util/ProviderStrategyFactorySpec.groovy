@@ -19,8 +19,11 @@ class ProviderStrategyFactorySpec extends Specification {
         where:
             strategyName  | strategyProviderName
             'sticky'      | StickyStrategy.class.simpleName
+            'STICKY'      | StickyStrategy.class.simpleName
             'random'      | RandomStrategy.class.simpleName
+            'RANDOM'      | RandomStrategy.class.simpleName
             'roundrobin'  | RoundRobinStrategy.class.simpleName
+            'ROUNDROBIN'  | RoundRobinStrategy.class.simpleName
             'round_robin' | RoundRobinStrategy.class.simpleName
             'round-robin' | RoundRobinStrategy.class.simpleName
             null          | RoundRobinStrategy.class.simpleName

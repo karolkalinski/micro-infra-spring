@@ -25,7 +25,8 @@ class ProviderStrategyFactory {
     }
 
     private String toAcceptableName(String originalStrategyName) {
-        return removeRoundRobinDelimiter(originalStrategyName ?: '')
+        def nonNullName = originalStrategyName ? originalStrategyName.toLowerCase() : ''
+        return removeRoundRobinDelimiter(nonNullName)
     }
 
     private String removeRoundRobinDelimiter(String originalStrategyName) {
