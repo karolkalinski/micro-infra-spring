@@ -1,5 +1,8 @@
 package com.ofg.infrastructure.discovery.util
 
+import org.apache.curator.x.discovery.strategies.RandomStrategy
+import org.apache.curator.x.discovery.strategies.RoundRobinStrategy
+import org.apache.curator.x.discovery.strategies.StickyStrategy
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -15,13 +18,13 @@ class ProviderStrategyFactorySpec extends Specification {
             strategyProvider.class.simpleName == strategyProviderName
         where:
             strategyName  | strategyProviderName
-            'sticky'      | 'StickyStrategy'
-            'random'      | 'RandomStrategy'
-            'roundrobin'  | 'RoundRobinStrategy'
-            'round_robin' | 'RoundRobinStrategy'
-            'round-robin' | 'RoundRobinStrategy'
-            null          | 'RoundRobinStrategy'
-            ''            | 'RoundRobinStrategy'
-            'unknown'     | 'RoundRobinStrategy'
+            'sticky'      | StickyStrategy.class.simpleName
+            'random'      | RandomStrategy.class.simpleName
+            'roundrobin'  | RoundRobinStrategy.class.simpleName
+            'round_robin' | RoundRobinStrategy.class.simpleName
+            'round-robin' | RoundRobinStrategy.class.simpleName
+            null          | RoundRobinStrategy.class.simpleName
+            ''            | RoundRobinStrategy.class.simpleName
+            'unknown'     | RoundRobinStrategy.class.simpleName
     }
 }
